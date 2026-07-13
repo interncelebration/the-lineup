@@ -153,20 +153,20 @@
       gap: 6px;
     }
 
-    .dots { display: flex; gap: 4px; }
-
-    .dot {
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      border: 1.5px solid;
-      transition: background 0.2s;
+    .prog-count {
+      font-family: 'NVIDIASans', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
     }
 
-    .dot.fest   { border-color: var(--green); }
-    .dot.fest.filled  { background: var(--green); }
-    .dot.future { border-color: #9B4DCA; }
-    .dot.future.filled { background: #9B4DCA; }
+    .prog-count.fest   { color: var(--green); }
+    .prog-count.future { color: #C580FF; }
+
+    .prog-total {
+      font-size: 12px;
+      font-weight: 400;
+      opacity: 0.5;
+    }
 
     .prog-check {
       font-size: 14px;
@@ -373,7 +373,7 @@
     <span class="title-the">The</span>
     <span class="title-lineup">Lineup</span>
     <div class="rule"></div>
-    <div class="tagline">Scan 2 FEST + 2 FUTURE to lock in your lineup</div>
+    <div class="tagline">Complete all 16 activities to lock in your lineup</div>
   </div>
 
   <div class="progress" id="progress"></div>
@@ -381,8 +381,8 @@
   <div class="card">
     <div class="card-inner">
       <div class="zone-headers">
-        <div class="zone-header fest"><span class="zone-icon">♪ ♫</span>&nbsp; FEST Stage</div>
-        <div class="zone-header future"><span class="zone-icon">✦ ◈</span>&nbsp; Future Stage</div>
+        <div class="zone-header fest"><span class="zone-icon">♪ ♫</span>&nbsp; FEST</div>
+        <div class="zone-header future"><span class="zone-icon">✦ ◈</span>&nbsp; FUTURE</div>
       </div>
       <div class="grid" id="grid"></div>
     </div>
@@ -392,7 +392,7 @@
     <button class="submit-btn locked" id="submitBtn" onclick="handleSubmit()">
       ✦ Lock In My Lineup ✦
     </button>
-    <div class="submit-hint" id="submitHint">Scan at least 2 FEST + 2 FUTURE to unlock</div>
+    <div class="submit-hint" id="submitHint">Complete all 16 activities to unlock</div>
   </div>
 
   <button class="reset-btn" onclick="resetCard()">Reset card (testing only)</button>
@@ -412,25 +412,25 @@
     const STORAGE_KEY = 'lineup-2026';
 
     const squares = [
-      { id: 'fest-1',   zone: 'fest',   icon: '♪', label: 'Grill or\npizza oven' },
-      { id: 'fest-2',   zone: 'fest',   icon: '♫', label: 'FEST\nphotobooth' },
-      { id: 'future-1', zone: 'future', icon: '◈', label: 'FUTURE\nbar' },
-      { id: 'future-2', zone: 'future', icon: '✦', label: 'Find the\nrobot' },
+      { id: 'fest-1',   zone: 'fest',   label: 'Meet a VIP,\nQR at check-in' },
+      { id: 'fest-2',   zone: 'fest',   label: 'NOLA Tent' },
+      { id: 'future-1', zone: 'future', label: 'Find Scorpion' },
+      { id: 'future-2', zone: 'future', label: 'SOL Stage' },
 
-      { id: 'fest-3',   zone: 'fest',   icon: '♬', label: 'FEST\nbar' },
-      { id: 'fest-4',   zone: 'fest',   icon: '♪', label: 'Claw\nmachine' },
-      { id: 'future-3', zone: 'future', icon: '⬡', label: 'FUTURE\nphotobooth' },
-      { id: 'future-4', zone: 'future', icon: '◈', label: 'Demo\nstation' },
+      { id: 'fest-3',   zone: 'fest',   label: 'Get Glam' },
+      { id: 'fest-4',   zone: 'fest',   label: 'High Angle' },
+      { id: 'future-3', zone: 'future', label: 'Reflective\nTunnel' },
+      { id: 'future-4', zone: 'future', label: 'Wine by Adam' },
 
-      { id: 'fest-5',   zone: 'fest',   icon: '♫', label: 'Festival\nGlam' },
-      { id: 'fest-6',   zone: 'fest',   icon: '♬', label: 'Live\nmusic' },
-      { id: 'future-5', zone: 'future', icon: '✦', label: 'Mirror\nball / DJ' },
-      { id: 'future-6', zone: 'future', icon: '⬡', label: 'Main\nstage' },
+      { id: 'fest-5',   zone: 'fest',   label: 'THE CLAW' },
+      { id: 'fest-6',   zone: 'fest',   label: 'Sando' },
+      { id: 'future-5', zone: 'future', label: '8ft Sandwich' },
+      { id: 'future-6', zone: 'future', label: 'LUA Booth' },
 
-      { id: 'fest-7',   zone: 'fest',   icon: '♪', label: 'Food\ntrailer' },
-      { id: 'fest-8',   zone: 'fest',   icon: '♫', label: 'Voyager\ncheck-in' },
-      { id: 'future-7', zone: 'future', icon: '◈', label: 'Endeavor\ncheck-in' },
-      { id: 'future-8', zone: 'future', icon: '✦', label: 'TBD' },
+      { id: 'fest-7',   zone: 'fest',   label: 'Drae All Day' },
+      { id: 'fest-8',   zone: 'fest',   label: '...' },
+      { id: 'future-7', zone: 'future', label: 'The Wheel' },
+      { id: 'future-8', zone: 'future', label: 'Paper Chains' },
     ];
 
     function getMarked() {
@@ -457,21 +457,17 @@
 
       document.getElementById('progress').innerHTML = `
         <div class="prog-zone fest">
-          <span class="prog-label fest"><span>♪</span> FEST</span>
+          <span class="prog-label fest">FEST</span>
           <div class="prog-right">
-            <div class="dots">
-              ${[0,1,2,3].map(i => `<div class="dot fest ${i < festCount ? 'filled' : ''}"></div>`).join('')}
-            </div>
-            <span class="prog-check ${festCount >= 2 ? 'visible' : ''}">✓</span>
+            <span class="prog-count fest">${festCount}<span class="prog-total">/8</span></span>
+            <span class="prog-check ${festCount >= 8 ? 'visible' : ''}">✓</span>
           </div>
         </div>
         <div class="prog-zone future">
-          <span class="prog-label future"><span>✦</span> FUTURE</span>
+          <span class="prog-label future">FUTURE</span>
           <div class="prog-right">
-            <div class="dots">
-              ${[0,1,2,3].map(i => `<div class="dot future ${i < futureCount ? 'filled' : ''}"></div>`).join('')}
-            </div>
-            <span class="prog-check ${futureCount >= 2 ? 'visible' : ''}">✓</span>
+            <span class="prog-count future">${futureCount}<span class="prog-total">/8</span></span>
+            <span class="prog-check ${futureCount >= 8 ? 'visible' : ''}">✓</span>
           </div>
         </div>
       `;
@@ -483,13 +479,13 @@
         </div>
       `).join('');
 
-      const unlocked = festCount >= 2 && futureCount >= 2;
+      const unlocked = festCount >= 8 && futureCount >= 8;
       const btn  = document.getElementById('submitBtn');
       const hint = document.getElementById('submitHint');
       btn.className = 'submit-btn ' + (unlocked ? 'unlocked' : 'locked');
       hint.textContent = unlocked
         ? 'Your lineup is locked — tap to submit for your cohort!'
-        : `Need: ${Math.max(0, 2 - festCount)} more FEST · ${Math.max(0, 2 - futureCount)} more FUTURE`;
+        : `${Math.max(0, 8 - festCount)} FEST + ${Math.max(0, 8 - futureCount)} FUTURE remaining`;
     }
 
     function tapSquare(id) {
@@ -502,7 +498,7 @@
       const marked = getMarked();
       const fest   = marked.filter(id => id.startsWith('fest')).length;
       const future = marked.filter(id => id.startsWith('future')).length;
-      if (fest >= 2 && future >= 2) window.location.href = FORM_URL;
+      if (fest >= 8 && future >= 8) window.location.href = FORM_URL;
     }
 
     function resetCard() {
