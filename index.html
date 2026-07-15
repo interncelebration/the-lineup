@@ -395,7 +395,6 @@
     <div class="submit-hint" id="submitHint">Complete all 16 activities to unlock</div>
   </div>
 
-  <button class="reset-btn" onclick="resetCard()">Reset card (testing only)</button>
 
   <div class="bottom-accent">
     <span class="ic-gold">♪</span>
@@ -473,7 +472,7 @@
       `;
 
       document.getElementById('grid').innerHTML = squares.map(sq => `
-        <div class="sq ${sq.zone} ${marked.includes(sq.id) ? 'marked' : ''}" onclick="tapSquare('${sq.id}')">
+        <div class="sq ${sq.zone} ${marked.includes(sq.id) ? 'marked' : ''}">`
           <span class="sq-check">✓</span>
           ${sq.label.replace('\n', '<br>')}
         </div>
@@ -488,23 +487,11 @@
         : `${Math.max(0, 8 - festCount)} FEST + ${Math.max(0, 8 - futureCount)} FUTURE remaining`;
     }
 
-    function tapSquare(id) {
-      const isNew = markSquare(id);
-      showToast(isNew ? 'Added to your lineup!' : 'Already in your lineup');
-      render();
-    }
-
     function handleSubmit() {
       const marked = getMarked();
       const fest   = marked.filter(id => id.startsWith('fest')).length;
       const future = marked.filter(id => id.startsWith('future')).length;
       if (fest >= 8 && future >= 8) window.location.href = FORM_URL;
-    }
-
-    function resetCard() {
-      localStorage.removeItem(STORAGE_KEY);
-      render();
-      showToast('Card reset');
     }
 
     function showToast(msg) {
