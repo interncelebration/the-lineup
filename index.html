@@ -472,7 +472,7 @@
       `;
 
       document.getElementById('grid').innerHTML = squares.map(sq => `
-        <div class="sq ${sq.zone} ${marked.includes(sq.id) ? 'marked' : ''}">`
+        <div class="sq ${sq.zone} ${marked.includes(sq.id) ? 'marked' : ''}">
           <span class="sq-check">✓</span>
           ${sq.label.replace('\n', '<br>')}
         </div>
